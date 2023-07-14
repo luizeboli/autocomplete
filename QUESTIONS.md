@@ -129,7 +129,7 @@ const Component = React.memo(() => {
 })
 ```
 
-This function receives a second parameter that is a function that should return if the component props are equal to the previous render, if so the component does not rerender.
+This function receives a second parameter that is a function that should return if the component props are equal to the previous render, if so the component does not rerender. The default behavior is the same as the `PureComponent`: do a shallow compare.
 
 This will prevent rerenders caused by prop changes, but no state or context changes.
 
