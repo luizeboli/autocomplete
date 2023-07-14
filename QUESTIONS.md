@@ -1,3 +1,76 @@
+# 3. Describe 3 ways to pass information from a component to its PARENT.
+
+React renders components in a tree format
+
+App
+└── Header
+└── Content
+    ├── Sidebar
+    └── Article
+
+So the usual way of passing data to components is down the tree, from the parent to the children. Passing data this way makes it easier to debug as we know the data flow is always from the top to the bottom, so we can better trace where the problem is.
+
+However, there are some ways we can achieve passing data from a children to its parent:
+
+1. Receiving a callback and executing it with the new data
+
+```jsx
+const Parent = () => {
+  const handleUpdateData = () => {
+    // ...
+  }
+
+  return <Children updateData={handleUpdateData} />
+}
+
+const Children = ({ updateData }) => {
+  return <button onClick={() => updateData()}>Click to update</button>
+}
+```
+
+2. Using the Context API
+
+```jsx
+
+const Context = createContext()
+
+const Parent = () => {
+  const handleUpdateData = () => {
+    // ...
+  }
+
+  return <Context.Provider value={{ handleUpdateData }}><Children /></Context.Provider>
+}
+
+const Children = ({ updateData }) => {
+  const { handleUpdateData } = useContext(Context)
+  return <button onClick={() => handleUpdateData()}>Click to update</button>
+}
+```
+
+3. Using the hook `useImperativeHandle`
+
+```jsx
+const Parent = () => {
+  const ref = useRef()
+
+  return <><Children ref={ref} />{JSON.stringify(ref.current?.data ?? {})}</>
+}
+
+const Children = forwardRef({ updateData }, ref) => {
+  const [data, setData] = useState({})
+
+  useImperativeHandle(ref,
+  () => ({
+    data,
+  }), [])
+
+  return <button onClick={() => setData({})}>Click to update</button>
+}
+```
+
+We should always keep in mind the state flow of the application, so we can try things like lifting the state up to the parent or common parents and remove the state from the children and pass it as props.
+
 # 8. How many arguments does setState take and why is it async.
 
 In the class version of a React component, the `setState` method accepts two arguments. The first one is the next state that can be either an object, string, etc. or a callback that receives the previous state as argument. The second one is a callback that will be executed after the state is updated.
