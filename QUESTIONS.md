@@ -224,6 +224,62 @@ The `setState` method is async because it causes the component to rerender which
 
 Also, `setState` is not async in the form of a Promise, that we can `await` or `.then`, instead, when calling `setState` what React does is append this update request to a queue that will be later executed.
 
+# 10. List a few ways styles can be used with components.
+
+1. The first way is a inline form by passing a `style` prop to the component, but doing this way we can't apply styles to pseudo elements and states, like `:before` or `:hover`
+
+```jsx
+const Component = () => {
+  return (
+    <div style={{ display: 'flex' }} />
+  )
+}
+```
+
+2. Create a css file and import it in the component
+
+```css
+/* index.css  */
+.wrapper {
+  display: flex;
+}
+```
+
+```jsx
+import './index.css'
+
+const Component = () => {
+  return (
+    <div style={{ display: 'flex' }} />
+  )
+}
+```
+
+The problem of creating regular `.css` files is that the styles will be applied globally through the application, this means they can affect other component.
+
+3. Create a CSS module
+
+```css
+/* index.module.css  */
+.wrapper {
+  display: flex;
+}
+```
+
+```jsx
+import './index.module.css'
+
+const Component = () => {
+  return (
+    <div style={{ display: 'flex' }} />
+  )
+}
+```
+
+The difference from the 2. approach is that by creating a CSS module creates a local scope of styles ensuring they do not affect other components.
+
+4. Third party libraries like styled-component, Material Ui, tailwind, etc...
+
 # 11. How to render an HTML string coming from the server.
  
 We can render HTML in React using the `dangerouslySetInnerHTML` property in a JSX tag. However, dealing with raw HTML can open doors to vulnerabilities like XSS, to avoid that the HTML must be sanitized, removing anything that can be malicious like iframe or event handlers attached to elements
