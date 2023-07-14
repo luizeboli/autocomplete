@@ -143,4 +143,34 @@ describe("<Autocomplete />", () => {
       within(elementWithoutHighlight).queryByTestId("highlighted-text"),
     ).not.toBeInTheDocument();
   });
+
+  it("should remove other options from the list when an option is selected", async () => {
+    // Arrange
+    const user = userEvent.setup();
+
+    render(
+      <Autocomplete
+        label="Search for users"
+        filterOptions={(): Promise<{ name: string }[]> =>
+          new Promise((resolve) => {
+            resolve([{ name: "Fake 1" }, { name: "Fake 2" }]);
+          })
+        }
+        getOptionLabel={(option) => option.name}
+      />,
+    );
+
+    // Act
+    await user.type(screen.getByLabelText("Search for users"), "Fake");
+    await user.click(await screen.findByText(textContentMatcher(/fake 1/i)));
+    await user.click(screen.getByLabelText("Search for users"));
+
+    // Assert
+    expect(
+      await screen.findByText(textContentMatcher(/fake 1/i)),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(textContentMatcher(/fake 2/i)),
+    ).not.toBeInTheDocument();
+  });
 });

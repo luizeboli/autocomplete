@@ -112,6 +112,7 @@ export function Autocomplete<TData>({
                     }
                     onSelect?.(option);
                     setShowAutocompleteList(false);
+                    setOptions([option])
                   }}
                 >
                   <HighlightText
