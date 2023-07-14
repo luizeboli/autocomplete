@@ -28,5 +28,16 @@ module.exports = {
     "consistent-return": "off",
     "react/require-default-props": "off",
     "react/no-unused-prop-types": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        devDependencies: [
+          "**/*.d.ts",
+          "**/*.spec.tsx",
+          "./src/tests/**/*.{ts,tsx}",
+          "vite.config.ts",
+        ],
+      },
+    ],
   },
 };

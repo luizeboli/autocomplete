@@ -82,7 +82,11 @@ export function Autocomplete<TData>({
       />
 
       {showAutocompleteList && (
-        <ul className={styles.autocompleteList} ref={listRef}>
+        <ul
+          className={styles.autocompleteList}
+          ref={listRef}
+          data-testid="autocomplete-list"
+        >
           {optionsNotFound && (
             <li className={styles.autocompleteListPlaceholder}>
               No options found...

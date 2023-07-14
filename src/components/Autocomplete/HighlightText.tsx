@@ -16,7 +16,9 @@ export function HighlightText({ text, highlight }: HighlightTextProps) {
           // Using index as the key is not ideal,
           // but let's consider the list would be completely different every search
           // eslint-disable-next-line react/no-array-index-key
-          <b key={index}>{part}</b>
+          <b key={index} data-testid="highlighted-text">
+            {part}
+          </b>
         ) : (
           part
         ),
