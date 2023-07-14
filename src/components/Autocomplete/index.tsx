@@ -46,19 +46,23 @@ export function Autocomplete<TData>({
   }, [showAutocompleteList]);
 
   const debouncedInputChange = () => {
-    let timeout: number;
+    let timeout: NodeJS.Timeout;
 
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       clearTimeout(timeout);
-      timeout = setTimeout(async () => {
+      timeout = setTimeout(() => {
         if (!event.target.value) {
           setOptions([]);
           return;
         }
         setLoading(true);
-        const optionsData = await filterOptions(event.target.value);
-        setOptions(optionsData);
-        setLoading(false);
+        filterOptions(event.target.value)
+          .then((data) => {
+            setOptions(data);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       }, 250);
     };
   };
