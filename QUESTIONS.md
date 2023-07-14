@@ -44,11 +44,13 @@ From my experience with the actual Context API this is not a problem, even retur
 
 React renders components in a tree format
 
+```
 App
 └── Header
 └── Content
     ├── Sidebar
     └── Article
+```
 
 So the usual way of passing data to components is down the tree, from the parent to the children. Passing data this way makes it easier to debug as we know the data flow is always from the top to the bottom, so we can better trace where the problem is.
 
