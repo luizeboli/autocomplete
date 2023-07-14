@@ -4,6 +4,10 @@
   position: relative;
 }
 
+.autocompleteWrapper:has(.autocompleteError) input {
+  border-color: #ff0000;
+}
+
 .autocompleteInput {
   background: none;
   appearance: none;
@@ -49,4 +53,10 @@
 
 .autocompleteListPlaceholder {
   padding: 0.25rem 0.5rem;
+}
+
+.autocompleteError {
+  color: #ff0000;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }

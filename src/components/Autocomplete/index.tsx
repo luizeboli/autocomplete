@@ -20,6 +20,7 @@ export function Autocomplete<TData>({
   const id = useId();
   const [showAutocompleteList, setShowAutocompleteList] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('')
   const listRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,9 +57,16 @@ export function Autocomplete<TData>({
           return;
         }
         setLoading(true);
+        setError('')
         filterOptions(event.target.value)
           .then((data) => {
             setOptions(data);
+          })
+          .catch(() => {
+            setOptions([])
+            setShowAutocompleteList(false)
+            // We don't know the error shape of this API, so I'm just adding a string
+            setError('Could not fetch options...')
           })
           .finally(() => {
             setLoading(false);
@@ -125,6 +133,7 @@ export function Autocomplete<TData>({
           })}
         </ul>
       )}
+      {!!error && <p className={styles.autocompleteError}>{error}</p>}
     </div>
   );
 }
