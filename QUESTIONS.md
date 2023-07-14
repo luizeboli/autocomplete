@@ -113,6 +113,51 @@ const Children = forwardRef({ updateData }, ref) => {
 
 We should always keep in mind the state flow of the application, so we can try things like lifting the state up to the parent or common parents and remove the state from the children and pass it as props.
 
+# 4. Give 2 ways to prevent components from re-rendering.
+
+In class Components we can prevent a rerender using `PureComponent` or implementing `shouldComponentUpdate` by ourselves.
+
+In the functional components there are some ways we can prevent a rerender:
+
+1. Using the `React.memo` (it's the `shouldComponentUpdate` functional version)
+
+```jsx
+const Component = React.memo(() => {
+  return <div />
+})
+```
+
+This function receives a second parameter that is a function that should return if the component props are equal to the previous render, if so the component does not rerender.
+
+This will prevent rerenders caused by prop changes, but no state or context changes.
+
+If we want to skip rerender based on state or context we might have to create a new parent component that pass the value down as props.
+
+2. Using the `useMemo` in a parent
+
+```jsx
+const Component = () =>{
+  const [state, setState] = useState({});
+
+  const ChildComponent = useMemo(() => {
+    return <div data-testid="children" />;
+  }, []);
+
+  return (
+    <div>
+      {ChildComponent}
+      <button onClick={() => setState({})}>Click to Update</button>
+    </div>
+  );
+};
+```
+
+This will prevent the `ChildComponent` to rerender based on Parent rerender as it's memoized by the `useMemo`.
+
+3. Using state with `useRef` hook.
+
+`useRef` does not trigger a rerender when it values changes. So we can move the state to a ref.
+
 # 8. How many arguments does setState take and why is it async.
 
 In the class version of a React component, the `setState` method accepts two arguments. The first one is the next state that can be either an object, string, etc. or a callback that receives the previous state as argument. The second one is a callback that will be executed after the state is updated.
