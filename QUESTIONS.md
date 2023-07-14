@@ -36,7 +36,9 @@ export default class App extends React.PureComponent {
 
 On the above example we are mutating the `this.state.array` array, so when updating it by clicking the `Click to Update` button does not triggers a rerender in the component as its a `PureComponent`. However, the component would rerender if it was a `Component`
 
+# 2. Context + ShouldComponentUpdate might be dangerous. Why is that?
 
+From my experience with the actual Context API this is not a problem, even returning `false` from the `shouldComponentUpdate` triggers a rerender in the component. Maybe it was a problem with the legacy Context Api, but I've never used it so I cannot make statements.
 
 # 3. Describe 3 ways to pass information from a component to its PARENT.
 
