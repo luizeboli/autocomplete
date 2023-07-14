@@ -26,5 +26,7 @@ module.exports = {
     "react/react-in-jsx-scope": "off",
     "import/prefer-default-export": "off",
     "consistent-return": "off",
+    "react/require-default-props": "off",
+    "react/no-unused-prop-types": "off",
   },
 };

@@ -4,10 +4,26 @@
   position: relative;
 }
 
+.autocompleteInput {
+  background: none;
+  appearance: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: none;
+  border: 1px solid #424242;
+  color: #fff;
+}
+
+.autocompleteInput:hover,
+.autocompleteInput:focus {
+  box-shadow: inset 0 0 0 1px #fff;
+}
+
 .autocompleteList {
   background-color: #323232;
-  margin-top: 0.5rem;
   padding: 0.5rem;
+  margin-top: 0.30rem;
   border-radius: 0.25rem;
   position: absolute;
   top: 100%;

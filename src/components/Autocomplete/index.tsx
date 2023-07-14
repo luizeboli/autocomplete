@@ -1,15 +1,27 @@
 import { useEffect, useId, useRef, useState } from "react";
 import styles from "./styles.module.css";
+import { HighlightText } from "./HighlightText";
 
-type AutocompleteProps = {
+type AutocompleteProps<TData> = {
   label: string;
+  placeholder?: string;
+  filterOptions: (searchTerm: string) => Promise<TData[]>;
+  getOptionLabel: (option: TData) => string;
 };
 
-export function Autocomplete({ label }: AutocompleteProps) {
+export function Autocomplete<TData>({
+  label,
+  placeholder,
+  filterOptions,
+  getOptionLabel,
+}: AutocompleteProps<TData>) {
   const id = useId();
   const [showAutocompleteList, setShowAutocompleteList] = useState(false);
+  const [loading, setLoading] = useState(false);
   const listRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const [options, setOptions] = useState<TData[]>([]);
 
   useEffect(() => {
     if (!showAutocompleteList) return;
@@ -31,27 +43,60 @@ export function Autocomplete({ label }: AutocompleteProps) {
     };
   }, [showAutocompleteList]);
 
+  const debouncedInputChange = () => {
+    let timeout: number;
+
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(async () => {
+        if (!event.target.value) {
+          setOptions([]);
+          return;
+        }
+        setLoading(true);
+        const optionsData = await filterOptions(event.target.value);
+        setOptions(optionsData);
+        setLoading(false);
+      }, 250);
+    };
+  };
+
+  const optionsNotFound = !options.length && !loading;
+  const showLoading = loading && !options.length;
+
   return (
     <div className={styles.autocompleteWrapper}>
       <label htmlFor={`input-${id}`}>{label}</label>
       <input
+        className={styles.autocompleteInput}
         ref={inputRef}
         id={`input-${id}`}
         type="text"
         onFocus={() => {
           setShowAutocompleteList(true);
         }}
+        placeholder={placeholder}
+        onChange={debouncedInputChange()}
       />
 
-      <ul
-        className={styles.autocompleteList}
-        hidden={!showAutocompleteList}
-        ref={listRef}
-      >
-        <li>Mock 1</li>
-        <li>Mock 2</li>
-        <li>Mock 3</li>
-      </ul>
+      {showAutocompleteList && (
+        <ul className={styles.autocompleteList} ref={listRef}>
+          {optionsNotFound && <li>No options found...</li>}
+          {showLoading && <li>Loading...</li>}
+
+          {options.map((option) => {
+            const optionLabel = getOptionLabel(option);
+            return (
+              <li key={optionLabel}>
+                <HighlightText
+                  text={optionLabel}
+                  highlight={inputRef.current?.value}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
