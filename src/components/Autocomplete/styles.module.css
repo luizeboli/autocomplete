@@ -1,0 +1,15 @@
+.autocompleteWrapper {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.autocompleteList {
+  background-color: #323232;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+}
