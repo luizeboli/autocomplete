@@ -81,8 +81,14 @@ export function Autocomplete<TData>({
 
       {showAutocompleteList && (
         <ul className={styles.autocompleteList} ref={listRef}>
-          {optionsNotFound && <li>No options found...</li>}
-          {showLoading && <li>Loading...</li>}
+          {optionsNotFound && (
+            <li className={styles.autocompleteListPlaceholder}>
+              No options found...
+            </li>
+          )}
+          {showLoading && (
+            <li className={styles.autocompleteListPlaceholder}>Loading...</li>
+          )}
 
           {options.map((option) => {
             const optionLabel = getOptionLabel(option);
