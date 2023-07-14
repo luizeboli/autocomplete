@@ -337,7 +337,54 @@ We can use it like so:
 const ComponentWithError = withErrorBoundary(Component);
 ```
 
+# 7. What's the difference in handling exceptions in promises, callbacks and async...await?
 
+You can pretty much achieve the same results using promises, callbacks and async/await. The difference is that callbacks are the most primitive way of dealing with async. You should manually check for the error and the data inside the callback, as an argument, and they can end up being in the famous callback hell problem.
+
+With Promises you can take advantage of the `then` and `catch` chainable methods, if any exception happen in the Promise chain it will execute the first `.catch` method after the exception. You can also chain the `then` and `catch` methods. Promises also have the `finally` that is executed when the promise is either resolved or rejected.
+
+Using promises you can better handle async by having a native way of dealing with exceptions and reducing callback hell.
+
+```javascript
+await Promise.resolve()
+  .then(() => 
+    ({ id: 1})
+  )
+  .then(data => {
+    // this will be { id: 1 }
+  })
+
+// If an exception is thrown then only the .catch will be executed
+await Promise.reject()
+  .then(() => 
+    ({ id: 1})
+  )
+  .catch((error) => {
+    // The 'error' parameter will contain the thrown exception
+  })
+
+// We can also use a '.then' after a '.catch'
+await Promise.reject()
+  .then(() => 
+    ({ id: 1})
+  )
+  .catch((error) => {
+    // The 'error' parameter will contain the thrown exception
+  })
+  .then(() => {
+    // This will be executed with the return from the above `.catch`
+  })
+```
+
+Talking about async/await, it's basically a syntax sugar on top of the Promise object (I have an post that talks about that [here](https://js.felicio.dev/asyncawait)), so we can use a `try/catch` block to deal with exception.
+
+```javascript
+try {
+  const response = await promise()
+} catch(error) {
+  // If anything throws an exception in the try block, then the catch block will be executed with the error as an argument
+}
+```
 
 # 8. How many arguments does setState take and why is it async.
 
