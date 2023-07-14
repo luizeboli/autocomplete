@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { Autocomplete } from "./components/Autocomplete";
-import "./app.css";
 import { User } from "./types";
+import "./app.css";
 
 function App() {
+  const [, setSelected] = useState<User>();
+
   return (
     <div className="app">
       <div>
@@ -27,6 +30,9 @@ function App() {
             );
           }}
           getOptionLabel={(user) => user.name}
+          onSelect={(user) => {
+            setSelected(user);
+          }}
         />
       </div>
     </div>

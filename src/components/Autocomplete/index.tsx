@@ -7,6 +7,7 @@ type AutocompleteProps<TData> = {
   placeholder?: string;
   filterOptions: (searchTerm: string) => Promise<TData[]>;
   getOptionLabel: (option: TData) => string;
+  onSelect?: (option: TData) => void;
 };
 
 export function Autocomplete<TData>({
@@ -14,6 +15,7 @@ export function Autocomplete<TData>({
   placeholder,
   filterOptions,
   getOptionLabel,
+  onSelect,
 }: AutocompleteProps<TData>) {
   const id = useId();
   const [showAutocompleteList, setShowAutocompleteList] = useState(false);
@@ -94,10 +96,21 @@ export function Autocomplete<TData>({
             const optionLabel = getOptionLabel(option);
             return (
               <li key={optionLabel}>
-                <HighlightText
-                  text={optionLabel}
-                  highlight={inputRef.current?.value}
-                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (inputRef.current) {
+                      inputRef.current.value = optionLabel;
+                    }
+                    onSelect?.(option);
+                    setShowAutocompleteList(false);
+                  }}
+                >
+                  <HighlightText
+                    text={optionLabel}
+                    highlight={inputRef.current?.value}
+                  />
+                </button>
               </li>
             );
           })}
