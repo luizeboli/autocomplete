@@ -214,6 +214,131 @@ const Component = () => {
 }
 ```
 
+# 6. Give 3 examples of the HOC pattern.
+
+HOC (high order component) is a common pattern used in React class components to add behavior, functionalities or just inject props in a given component. Nowadays we can do the same with custom hooks.
+
+The first example is an authentication HOC
+
+```jsx
+const withAuthentication = (WrappedComponent) => {
+  class WithAuthentication extends React.Component {
+    
+    // Check authentication status and perform necessary actions like redirecting to the login page
+    // ...
+
+    render() {
+      if (authenticated) {
+        return <WrappedComponent user={this.currentUser} />;
+      } else {
+        return <Spinner />;
+      }
+    }
+  }
+  
+  return WithAuthentication;
+};
+```
+
+We can use it like so:
+
+```jsx
+const ProtectedComponent = withAuthentication(Component);
+```
+
+If the user is not authenticated then the contents of the components is not rendered.
+
+The second example is a component that adds an event listener to the `resize` event, so it can inject the current window size to a given component
+
+```jsx
+const withWindowSize = (WrappedComponent) => {
+  class withWindowSize extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+    }
+    
+    componentDidMount() {
+      window.addEventListener('resize', this.handleResize);
+    }
+    
+    componentWillUnmount() {
+      window.removeEventListener('resize', this.handleResize);
+    }
+    
+    handleResize = () => {
+      this.setState({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+    
+    render() {
+      const { width, height } = this.state;
+      
+      return (
+        <WrappedComponent width={width} height={height} {...this.props} />
+      );
+    }
+  }
+  
+  return withWindowSize;
+};
+```
+
+We can use it like so:
+
+```jsx
+const Component = ({ width, height }) => {
+  // ...
+};
+
+const WindowSizeComponent = withResize(Component);
+```
+
+The last example is kind of an Error Boundary, so we can render an error fallback and do additional actions like logging into Sentry or other service. Not to mention, an Error Boundary is implemented using the `componentDidCatch` lifecycle method.
+
+```jsx
+const withErrorBoundary = (WrappedComponent) => {
+  class withErrorBoundary extends React.Component {
+    state = {
+      hasError: false,
+      error: null
+    };
+    
+    componentDidCatch(error, info) {
+      this.setState({
+        hasError: true,
+        error
+      }); 
+    }
+    
+    render() {
+      const { hasError, error } = this.state;
+      
+      if (hasError) {
+        return <ErrorComponent error={error} />;
+      }
+      
+      return <WrappedComponent {...this.props} />;
+    }
+  }
+  
+  return withErrorBoundary;
+};
+```
+
+We can use it like so:
+
+```jsx
+const ComponentWithError = withErrorBoundary(Component);
+```
+
+
+
 # 8. How many arguments does setState take and why is it async.
 
 In the class version of a React component, the `setState` method accepts two arguments. The first one is the next state that can be either an object, string, etc. or a callback that receives the previous state as argument. The second one is a callback that will be executed after the state is updated.
