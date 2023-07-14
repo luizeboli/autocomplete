@@ -1,3 +1,43 @@
+# 1. What is the difference between Component and PureComponent? Give an example where it might break my app.
+
+The difference that I can remember is the `Component` will rerender whenever the state or props changes, on the other hand, a `PureComponent` implements the `shouldComponentUpdate` with a shallow comparison (checking if they are equal by value in case of primitives, and equal by reference in case of objects) on both state and props. If they are equal then the component will not rerender.
+
+This can be a problem when the state is mutated, preventing the component to be rerendered as the object reference will be the same as the previous render.
+
+Example:
+
+```jsx
+export default class App extends React.PureComponent {
+  constructor() {
+    super();
+    this.state = {
+      array: [1]
+    };
+
+    this.handleUpdate.bind(this);
+  }
+
+  handleUpdate = () => {
+    const array = this.state.array;
+    array.push(2);
+    this.setState({ array });
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <p>{JSON.stringify(this.state.array)}</p>
+        <button onClick={this.handleUpdate}>Click to Update</button>
+      </div>
+    );
+  }
+}
+```
+
+On the above example we are mutating the `this.state.array` array, so when updating it by clicking the `Click to Update` button does not triggers a rerender in the component as its a `PureComponent`. However, the component would rerender if it was a `Component`
+
+
+
 # 3. Describe 3 ways to pass information from a component to its PARENT.
 
 React renders components in a tree format
