@@ -224,6 +224,23 @@ The `setState` method is async because it causes the component to rerender which
 
 Also, `setState` is not async in the form of a Promise, that we can `await` or `.then`, instead, when calling `setState` what React does is append this update request to a queue that will be later executed.
 
+# 9. List the steps needed to migrate a Class to Function Component.
+
+Honestly I don't know if there's a way to migrate from Class to Function by doing small changes that doesn't break the component in the first save, lol.
+
+I did a huge migration in an application at my current job, from class to functional, basically following these steps:
+
+> First of all, I would like to write some tests to cover the component functionalities, but it's not always possible (sometimes the project does not have tests, or other weird reasons). After that:
+
+1. Change from class declaration to function declaration;
+2. Remove the constructor by moving the state initialization to the hook version;
+3. Adjust the class methods declaration and refactor them to stop using `this` (state, props and other methods);
+4. Remove the `render` method and just lift up the `return` statement;
+5. Adjust all lifecycle methods like `componentDidMount`, `componentDidUpdate`, `componentWillUpdate`, `componentWillUnmount` to `useEffect`;
+6. Implement `React.memo` if the component is a `PureComponent` or uses `shouldComponentUpdate`
+
+If I'm not forgetting anything, that's it. Obviously some improvements opportunities might show up, like splitting the state. But I prefer to first migrate it and later check if we can do improvements.
+
 # 10. List a few ways styles can be used with components.
 
 1. The first way is a inline form by passing a `style` prop to the component, but doing this way we can't apply styles to pseudo elements and states, like `:before` or `:hover`
