@@ -158,6 +158,62 @@ This will prevent the `ChildComponent` to rerender based on Parent rerender as i
 
 `useRef` does not trigger a rerender when it values changes. So we can move the state to a ref.
 
+# 5. What is a fragment and why do we need it? Give an example where it might break my app.
+
+A fragment is an empty React component that does not add additional tags to the markup.
+
+JSX is not HTML, so when we use "html tags" like `<div />` in a component we are actually using "jsx tags". This means these tags will be converted to an array of objects to represent the components tree.
+
+Because of that we cannot return multiple components without an ancestor:
+
+```jsx
+const Component = () => {
+  return (
+    <div />
+    <div />
+  )
+}
+```
+
+This would be the same as returning multiple objects without wrapping them in an array:
+
+```javascript
+function() {
+  return { id: 1 }, { id: 2}
+}
+```
+
+We must then wrap the components in a fragment, this is useful when we don't want to create additional tags. The shorthand syntax for fragment is `<>`:
+
+```jsx
+const Component = () => {
+  return (
+    <>
+      <div />
+      <div />
+    </>
+  )
+}
+```
+
+We can use fragments anywhere we can use a normal component, including lists, and this can break the app if we don't pass a key to the fragment. We also can't pass key to the shorthand syntax, we must use the `<React.Fragment>` syntax.
+
+Why the absence of a key can break the app?
+
+When rendering lists React uses the key to track the current position of the element and optimize updates to the tree based on the elements that has changed. So when we don't pass a key unexpected behaviors that may be hard to debug happens, like rendering the content of an element in the wrong position. React adopts a similar solution when dealing with hooks, that's why we can't render hooks in conditional statements like `if`, they must always be in the same execution position.
+
+```jsx
+const Component = () => {
+  const array = [1,2,3]
+
+  return array.map(item => (
+    <React.Fragment key={item}>
+      {item}
+    </React.Fragment>
+  ))
+}
+```
+
 # 8. How many arguments does setState take and why is it async.
 
 In the class version of a React component, the `setState` method accepts two arguments. The first one is the next state that can be either an object, string, etc. or a callback that receives the previous state as argument. The second one is a callback that will be executed after the state is updated.
